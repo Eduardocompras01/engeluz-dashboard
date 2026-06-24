@@ -1392,6 +1392,7 @@ function renderABCProjetos(data){
   let pAcum=0;
   const pAcumPct=pSorted.map(e=>{pAcum+=e[1];return parseFloat((pAcum/pTot*100).toFixed(1))});
   const innerP=document.getElementById('pareto-proj-inner');
+  innerP.style.width='1px'; // reset antes de medir para evitar expansão do filho
   const containerWp=(innerP.parentElement.offsetWidth||300)-4;
   const minW=Math.max(containerWp,pSorted.length*90);
   innerP.style.width=minW+'px';
