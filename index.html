@@ -1392,8 +1392,8 @@ function renderABCProjetos(data){
   let pAcum=0;
   const pAcumPct=pSorted.map(e=>{pAcum+=e[1];return parseFloat((pAcum/pTot*100).toFixed(1))});
   const innerP=document.getElementById('pareto-proj-inner');
-  const containerWp=innerP.parentElement.offsetWidth||300;
-  const minW=Math.max(containerWp,pSorted.length*Math.floor(containerWp/Math.min(pSorted.length,8)));
+  const containerWp=(innerP.parentElement.offsetWidth||300)-4;
+  const minW=Math.max(containerWp,pSorted.length*90);
   innerP.style.width=minW+'px';
   innerP.style.height='380px';
   const cvsp=document.getElementById('cParetoProjeto');
@@ -1403,7 +1403,7 @@ function renderABCProjetos(data){
   charts.paretoProj=new Chart(document.getElementById('cParetoProjeto'),{
     type:'bar',
     data:{labels:pSorted.map(e=>e[0].length>16?e[0].slice(0,14)+'…':e[0]),datasets:[
-      {type:'bar',label:'Valor',data:pSorted.map(e=>Math.round(e[1])),backgroundColor:BAR_COLORS.slice(0,pSorted.length),borderRadius:4,borderSkipped:false,yAxisID:'y',maxBarThickness:120},
+      {type:'bar',label:'Valor',data:pSorted.map(e=>Math.round(e[1])),backgroundColor:BAR_COLORS.slice(0,pSorted.length),borderRadius:4,borderSkipped:false,yAxisID:'y'},
       {type:'line',label:'% Acumulada',data:pAcumPct,borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.06)',pointBackgroundColor:'#ef4444',pointRadius:4,tension:0.3,yAxisID:'y2',borderWidth:2}
     ]},
     options:{animation:false,responsive:false,maintainAspectRatio:false,
