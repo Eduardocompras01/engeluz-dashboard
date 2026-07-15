@@ -1381,12 +1381,12 @@ function renderABCCompras(data){
   if(sk){rows.sort((a,b)=>{const va=a[sk.col],vb=b[sk.col];return sk.dir==='asc'?(va>vb?1:-1):(va<vb?1:-1)})}
   document.getElementById('abc-body').innerHTML=rows.map(r=>`<tr>
     <td><span class="rank">${r[0]}</span></td>
-    <td title="${r[1]}">${String(r[1]).length>32?String(r[1]).slice(0,30)+'…':r[1]}</td>
+    <td title="${r[1]}">${String(r[1]).length>26?String(r[1]).slice(0,24)+'…':r[1]}</td>
     <td style="color:var(--text2);font-size:11px">${r[2]}</td>
     <td style="color:var(--text2);font-size:11px">${r[3]}</td>
-    <td class="r">${r[4]}</td>
-    <td class="r" style="color:var(--accent)">${r[5]}</td>
-    <td class="r" style="color:var(--text2)">${r[6]}</td>
+    <td class="r" style="white-space:nowrap">${r[4]}</td>
+    <td class="r" style="white-space:nowrap;color:var(--accent)">${r[5]}</td>
+    <td class="r" style="white-space:nowrap;color:var(--text2)">${r[6]}</td>
     <td><span class="pill ${r[7]==='A'?'pill-a':r[7]==='B'?'pill-b':'pill-c'}">${r[7]}</span></td>
   </tr>`).join('')||'<tr><td colspan="8" class="empty">Nenhum dado.</td></tr>';
 }
