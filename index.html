@@ -44,7 +44,7 @@
 *::-webkit-scrollbar-track{background:var(--scrollbar-track)}
 *::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:3px}
 body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;transition:background .2s,color .2s}
-.sidebar{width:234px;flex-shrink:0;background:var(--nav-bg);border-right:1px solid var(--nav-border);display:flex;flex-direction:column;position:relative;z-index:10}
+.sidebar{width:234px;flex-shrink:0;background:var(--nav-bg);border-right:1px solid var(--nav-border);display:flex;flex-direction:column;position:relative;z-index:10;height:100%;overflow-y:auto}
 
 /* ── UPLOAD ── */
 #upload-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--nav-bg)}
@@ -64,7 +64,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .rules-box strong{font-weight:600}
 
 /* ── APP LAYOUT ── */
-#app{display:none;flex-direction:row;min-height:100vh}
+#app{display:none;flex-direction:row;height:100vh;overflow:hidden}
 .sidebar-header{padding:18px 18px 14px;border-bottom:1px solid var(--nav-border)}
 .sidebar-brand{display:flex;align-items:center;gap:10px}
 .brand-icon{width:34px;height:34px;background:var(--accent-dim);border:1px solid var(--accent-mid);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -833,6 +833,7 @@ function loadFile(file){
       if(!r[COL.FORN]) QUALITY_ISSUES.push({tipo:'erro',msg:`Pedido #${r[COL.PEDIDO]} sem fornecedor`});
       if(!r[COL.DATA]) QUALITY_ISSUES.push({tipo:'warn',msg:`Pedido #${r[COL.PEDIDO]} sem data`});
       if(!r[COL.FAM])  QUALITY_ISSUES.push({tipo:'warn',msg:`Pedido #${r[COL.PEDIDO]} (${r[COL.FORN]}) sem família preenchida`});
+      if(!r[COL.PROJ]) QUALITY_ISSUES.push({tipo:'warn',msg:`Pedido #${r[COL.PEDIDO]} (${r[COL.FORN]}) sem projeto preenchido — aparece como "—" na Curva ABC Projetos`});
     });
 
     // ── 6. Guardar cópia dos dados originais (antes das regras) para Matriz
@@ -1160,7 +1161,7 @@ function buildThead(tbodyId, cols){
   const tr=document.getElementById(theadId);
   if(!tr)return;
   tr.innerHTML=cols.map((c,i)=>`
-    <th onclick="sortTable('${tbodyId}',${i},this)">
+    <th onclick="sortTable('${tbodyId}',${i},this)"${c.align?` style="text-align:${c.align}"`:''}>
       ${c.label}
       ${c.filterable!==false?`<div class="col-filter-wrap" onclick="event.stopPropagation()">
         <button class="col-filter-btn ${(colFilters[tbodyId+'_'+i]||[]).length?'active':''}" onclick="openColFilter('${tbodyId}',${i},this)" title="Filtrar">▼</button>
@@ -1349,7 +1350,7 @@ function renderABCCompras(data){
 
   const cols=[
     {label:'#',filterable:false},{label:'Fornecedor'},{label:'Setor'},{label:'Família'},
-    {label:'Valor',filterable:false},{label:'% Unit.',filterable:false},{label:'% Acum.',filterable:false},{label:'Classe'}
+    {label:'Valor',filterable:false,align:'right'},{label:'% Unit.',filterable:false,align:'right'},{label:'% Acum.',filterable:false,align:'right'},{label:'Classe'}
   ];
   buildThead('abc-body',cols);
 
@@ -1429,8 +1430,8 @@ function renderABCProjetos(data){
   });
 
   const pcols=[
-    {label:'#',filterable:false},{label:'Projeto'},{label:'Valor total',filterable:false},
-    {label:'Qtd pedidos',filterable:false},{label:'% Unit.',filterable:false},{label:'% Acum.',filterable:false},{label:'Classe'}
+    {label:'#',filterable:false},{label:'Projeto'},{label:'Valor total',filterable:false,align:'right'},
+    {label:'Qtd pedidos',filterable:false,align:'right'},{label:'% Unit.',filterable:false,align:'right'},{label:'% Acum.',filterable:false,align:'right'},{label:'Classe'}
   ];
   buildThead('proj-body',pcols);
 
