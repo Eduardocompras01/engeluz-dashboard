@@ -1353,8 +1353,20 @@ function renderABCCompras(data){
   ];
   buildThead('abc-body',cols);
 
-  const fMap={},fSetor={},fFam={};
-  av.forEach(r=>{fMap[r[COL.FORN]]=(fMap[r[COL.FORN]]||0)+r[COL.VALOR];fSetor[r[COL.FORN]]=r[COL.SETOR];fFam[r[COL.FORN]]=r[COL.FAM]});
+  const fMap={},fSetorVal={},fFamVal={};
+  av.forEach(r=>{
+    const f=r[COL.FORN],v=r[COL.VALOR]||0;
+    fMap[f]=(fMap[f]||0)+v;
+    const s=String(r[COL.SETOR]||'').trim()||'—';
+    if(!fSetorVal[f])fSetorVal[f]={};
+    fSetorVal[f][s]=(fSetorVal[f][s]||0)+v;
+    const fm=String(r[COL.FAM]||'').trim()||'—';
+    if(!fFamVal[f])fFamVal[f]={};
+    fFamVal[f][fm]=(fFamVal[f][fm]||0)+v;
+  });
+  const fSetor={},fFam={};
+  Object.keys(fSetorVal).forEach(f=>{fSetor[f]=Object.entries(fSetorVal[f]).sort((a,b)=>b[1]-a[1]).map(e=>e[0]).join(', ')});
+  Object.keys(fFamVal).forEach(f=>{fFam[f]=Object.entries(fFamVal[f]).sort((a,b)=>b[1]-a[1]).map(e=>e[0]).join(', ')});
   let fSorted=Object.entries(fMap).sort((a,b)=>b[1]-a[1]);
   const fTot=fSorted.reduce((s,e)=>s+e[1],0);
   let fAcum=0;
