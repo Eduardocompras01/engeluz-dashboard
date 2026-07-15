@@ -1679,7 +1679,13 @@ async function autoLoad(){
   // 0. JSON pre-processado (mais rapido — sem XLSX.js)
   if(typeof EMBEDDED_DATA!=='undefined'&&EMBEDDED_DATA){
     RAW=EMBEDDED_DATA;
-    if(EMBEDDED_QUALITY&&EMBEDDED_QUALITY.length)QUALITY_ISSUES=EMBEDDED_QUALITY;
+    QUALITY_ISSUES=EMBEDDED_QUALITY&&EMBEDDED_QUALITY.length?[...EMBEDDED_QUALITY]:[];
+    RAW.forEach(r=>{
+      if(!r[COL.FORN]) QUALITY_ISSUES.push({tipo:'erro',msg:`Pedido #${r[COL.PEDIDO]} sem fornecedor`});
+      if(!r[COL.DATA]) QUALITY_ISSUES.push({tipo:'warn',msg:`Pedido #${r[COL.PEDIDO]} sem data`});
+      if(!r[COL.FAM])  QUALITY_ISSUES.push({tipo:'warn',msg:`Pedido #${r[COL.PEDIDO]} (${r[COL.FORN]}) sem família preenchida`});
+      if(!r[COL.PROJ]) QUALITY_ISSUES.push({tipo:'warn',msg:`Pedido #${r[COL.PEDIDO]} (${r[COL.FORN]}) sem projeto preenchido — aparece como "—" na Curva ABC Projetos`});
+    });
     initApp();
     return;
   }
