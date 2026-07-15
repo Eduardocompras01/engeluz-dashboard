@@ -1405,17 +1405,18 @@ function renderABCProjetos(data){
   let pAcum=0;
   const pAcumPct=pSorted.map(e=>{pAcum+=e[1];return parseFloat((pAcum/pTot*100).toFixed(1))});
   const innerP=document.getElementById('pareto-proj-inner');
-  const minW=Math.max(pSorted.length*90,300);
+  const minW=Math.max(pSorted.length*90,200);
   innerP.style.width=minW+'px';
   innerP.style.height='380px';
+  if(charts.paretoProj){charts.paretoProj.destroy();charts.paretoProj=null;}
   const cvsp=document.getElementById('cParetoProjeto');
-  cvsp.style.width=minW+'px';cvsp.style.height='380px';
+  // position:absolute faz o Chart.js 4 ler o container (100%) — sobrescreve para relative
+  cvsp.style.cssText=`position:relative;display:block;width:${minW}px;height:380px`;
   cvsp.width=minW;cvsp.height=380;
-  if(charts.paretoProj)charts.paretoProj.destroy();
-  charts.paretoProj=new Chart(document.getElementById('cParetoProjeto'),{
+  charts.paretoProj=new Chart(cvsp,{
     type:'bar',
     data:{labels:pSorted.map(e=>e[0].length>16?e[0].slice(0,14)+'…':e[0]),datasets:[
-      {type:'bar',label:'Valor',data:pSorted.map(e=>Math.round(e[1])),backgroundColor:BAR_COLORS.slice(0,pSorted.length),borderRadius:4,borderSkipped:false,yAxisID:'y'},
+      {type:'bar',label:'Valor',data:pSorted.map(e=>Math.round(e[1])),backgroundColor:BAR_COLORS.slice(0,pSorted.length),borderRadius:4,borderSkipped:false,yAxisID:'y',maxBarThickness:80},
       {type:'line',label:'% Acumulada',data:pAcumPct,borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.06)',pointBackgroundColor:'#ef4444',pointRadius:4,tension:0.3,yAxisID:'y2',borderWidth:2}
     ]},
     options:{animation:false,responsive:false,maintainAspectRatio:false,
